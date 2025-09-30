@@ -7,7 +7,6 @@ import { fetcher } from "@/lib/fetcher";
 import type { NewsItem } from "@/lib/types";
 import {
   formatDate,
-  slugifyCategory,
   getCategoryFromSlug,
   filterByCategory,
 } from "@/lib/news-utils";
@@ -83,19 +82,6 @@ export default function CategoryPage({
                   Stay updated with the latest {categoryName.toLowerCase()} news
                   and insights.
                 </p>
-              </div>
-              <div className="hidden lg:block">
-                <div
-                  className={`w-24 h-24 rounded-full flex items-center justify-center text-white text-2xl font-bold ${
-                    categoryName === "Business" ||
-                    categoryName === "Technology" ||
-                    categoryName === "Sports"
-                      ? "bg-accent-blue"
-                      : "bg-accent-purple"
-                  }`}
-                >
-                  {categoryName.charAt(0)}
-                </div>
               </div>
             </div>
 

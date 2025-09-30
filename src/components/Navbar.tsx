@@ -6,7 +6,6 @@ import useSWR from "swr";
 import { cn } from "@/lib/utils";
 import { fetcher } from "@/lib/fetcher";
 import { getCategories, slugifyCategory } from "@/lib/news-utils";
-import type { NewsItem } from "@/lib/types";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 
@@ -18,61 +17,67 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-white shadow-md sticky top-0 z-50">
+    <nav className="bg-gray-800 shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Top section with logo */}
-        <div className="flex justify-between items-center py-4">
-          <Link href="/" className="flex items-center">
-            <Image
-              src="/logo.svg"
-              alt="News Logo"
-              width={250}
-              height={60}
-              className="h-auto"
-              priority
-            />
-          </Link>
+        {/* Top section with logo, categories, and menu */}
+        <div className="grid grid-cols-3 items-center py-4">
+          <div className="justify-self-start">
+            <Link href="/" className="flex items-center">
+              <Image
+                src="/logo.png"
+                alt="News Logo"
+                width={250}
+                height={60}
+                className="h-auto"
+                priority
+              />
+            </Link>
+          </div>
 
-          {/* Mobile menu button */}
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden text-gray-500 hover:text-gray-700"
-          >
-            {isMobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
-          </button>
-        </div>
-
-        {/* Categories section */}
-        <div className="border-t border-gray-200">
-          <div
-            className={cn(
-              "flex space-x-8 overflow-x-auto py-3 md:flex",
-              isMobileMenuOpen
-                ? "flex flex-col space-x-0 space-y-2 pb-4"
-                : "hidden md:flex"
-            )}
-          >
+          <div className="justify-self-center hidden md:flex space-x-8">
             {categories.map((category, index) => (
               <Link
                 key={category}
                 href={`/category/${slugifyCategory(category)}`}
                 className={cn(
                   "font-medium text-sm whitespace-nowrap transition-colors duration-200",
-                  index % 2 === 0
-                    ? "text-gray-700 hover:text-accent-blue"
-                    : "text-gray-700 hover:text-accent-purple"
+                  "text-white hover:text-accent-purple"
                 )}
+              >
+                {category}
+              </Link>
+            ))}
+          </div>
+
+          <div className="justify-self-end">
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-white hover:text-accent-purple"
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden flex flex-col space-y-2 py-4 border-t border-gray-600">
+            {categories.map((category) => (
+              <Link
+                key={category}
+                href={`/category/${slugifyCategory(category)}`}
+                className="font-medium text-sm text-white hover:text-accent-purple transition-colors duration-200"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {category}
               </Link>
             ))}
           </div>
-        </div>
+        )}
       </div>
     </nav>
   );

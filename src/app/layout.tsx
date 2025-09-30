@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "MyStartup News - Latest News & Updates",
@@ -8,19 +10,6 @@ export const metadata: Metadata = {
   keywords:
     "news, business, technology, sports, world, economy, politics, general",
   authors: [{ name: "MyStartup News Team" }],
-  openGraph: {
-    title: "MyStartup News - Latest News & Updates",
-    description:
-      "Your trusted source for the latest news across business, technology, sports, and world events.",
-    type: "website",
-    locale: "en_US",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "MyStartup News - Latest News & Updates",
-    description:
-      "Your trusted source for the latest news across business, technology, sports, and world events.",
-  },
 };
 
 export default function RootLayout({
@@ -30,7 +19,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="font-sans antialiased bg-gray-50">{children}</body>
+      <body className="font-sans antialiased bg-gray-50">
+        <div className="min-h-screen flex flex-col">
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </div>
+      </body>
     </html>
   );
 }
