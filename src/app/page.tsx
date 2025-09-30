@@ -1,5 +1,6 @@
 import NewsCarousel from "@/components/NewsCarousel";
 import LatestNews from "@/components/LatestNews";
+import TechNews from "@/components/TechNews";
 
 export default function HomePage() {
   return (
@@ -15,6 +16,13 @@ export default function HomePage() {
       <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <LatestNews />
+        </div>
+      </section>
+
+      {/* Technology Section */}
+      <section className="py-12 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <TechNews />
         </div>
       </section>
     </div>

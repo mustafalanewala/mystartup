@@ -71,9 +71,7 @@ export default function NewsDetailPage({
             </Link>
             <span className="text-gray-400">/</span>
             <Link
-              href={`/news/category/${slugifyCategory(
-                newsItem.Categrory_Name
-              )}`}
+              href={`/category/${slugifyCategory(newsItem.Categrory_Name)}`}
               className="text-gray-500 hover:text-accent-blue transition-colors"
             >
               {newsItem.Categrory_Name}
@@ -122,7 +120,19 @@ export default function NewsDetailPage({
                 <div className="flex items-center space-x-4 pb-6 border-b border-gray-200">
                   <span className="text-gray-600 font-medium">Share:</span>
                   <div className="flex items-center space-x-3">
-                    <button className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors">
+                    <button
+                      onClick={() => {
+                        const url = encodeURIComponent(window.location.href);
+                        const text = encodeURIComponent(newsItem.News_Title);
+                        window.open(
+                          `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
+                          "_blank",
+                          "noopener,noreferrer"
+                        );
+                      }}
+                      className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
+                      aria-label="Share on Twitter"
+                    >
                       <svg
                         className="w-4 h-4"
                         fill="currentColor"
@@ -131,7 +141,18 @@ export default function NewsDetailPage({
                         <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045C7.728 8.088 4.1 6.128 1.671 3.149c-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
                       </svg>
                     </button>
-                    <button className="p-2 bg-blue-800 text-white rounded-full hover:bg-blue-900 transition-colors">
+                    <button
+                      onClick={() => {
+                        const url = encodeURIComponent(window.location.href);
+                        window.open(
+                          `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+                          "_blank",
+                          "noopener,noreferrer"
+                        );
+                      }}
+                      className="p-2 bg-blue-800 text-white rounded-full hover:bg-blue-900 transition-colors"
+                      aria-label="Share on Facebook"
+                    >
                       <svg
                         className="w-4 h-4"
                         fill="currentColor"
@@ -140,7 +161,18 @@ export default function NewsDetailPage({
                         <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                       </svg>
                     </button>
-                    <button className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors">
+                    <button
+                      onClick={() => {
+                        const url = encodeURIComponent(window.location.href);
+                        window.open(
+                          `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
+                          "_blank",
+                          "noopener,noreferrer"
+                        );
+                      }}
+                      className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors"
+                      aria-label="Share on LinkedIn"
+                    >
                       <svg
                         className="w-4 h-4"
                         fill="currentColor"

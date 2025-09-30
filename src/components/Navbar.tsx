@@ -20,7 +20,7 @@ export default function Navbar() {
     <nav className="bg-gray-800 shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Top section with logo, categories, and menu */}
-        <div className="grid grid-cols-3 items-center py-4">
+        <div className="flex justify-between md:grid md:grid-cols-3 items-center py-4">
           <div className="justify-self-start">
             <Link href="/" className="flex items-center">
               <Image

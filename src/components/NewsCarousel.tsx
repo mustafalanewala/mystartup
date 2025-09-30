@@ -80,9 +80,9 @@ export default function NewsCarousel() {
   const currentNews = news[currentIndex];
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-10 gap-6 h-96 md:h-[500px]">
+    <div className="grid grid-cols-1 lg:grid-cols-10 gap-4 lg:gap-6 h-auto lg:h-[500px]">
       {/* Carousel Section - 70% width */}
-      <div className="lg:col-span-7 h-full">
+      <div className="col-span-1 lg:col-span-7 h-80 lg:h-full">
         <div className="relative h-full overflow-hidden rounded-lg shadow-lg">
           {/* Main carousel image */}
           <div className="relative h-full">
@@ -202,8 +202,8 @@ export default function NewsCarousel() {
       </div>
 
       {/* News List Section - 30% width */}
-      <div className="lg:col-span-3 h-full">
-        <div className="bg-white rounded-lg shadow-lg p-6 h-full overflow-y-auto">
+      <div className="col-span-1 lg:col-span-3 h-auto lg:h-full">
+        <div className="bg-white rounded-lg shadow-lg p-6 h-auto lg:h-full lg:overflow-y-auto">
           <h3 className="text-lg font-bold text-gray-900 mb-4">
             Latest Headlines
           </h3>
