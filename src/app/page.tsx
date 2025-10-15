@@ -1,6 +1,7 @@
 import NewsCarousel from "@/components/NewsCarousel";
 import LatestNews from "@/components/LatestNews";
 import TechNews from "@/components/TechNews";
+import Ads from "@/components/Ads";
 
 export default function HomePage() {
   return (
@@ -12,10 +13,28 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Banner Ad */}
+      <section className="py-4 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-center">
+            <Ads className="w-full max-w-4xl" />
+          </div>
+        </div>
+      </section>
+
       {/* Latest News Section */}
       <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <LatestNews />
+        </div>
+      </section>
+
+      {/* Medium Ad */}
+      <section className="py-8 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-center">
+            <Ads className="w-full max-w-4xl" />
+          </div>
         </div>
       </section>
 

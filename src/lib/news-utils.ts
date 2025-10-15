@@ -19,21 +19,33 @@ export function slugifyCategory(name: string) {
 }
 
 export function getCategories(items: NewsItem[]) {
+  if (!Array.isArray(items)) {
+    return []
+  }
   const set = new Set(
-    items.filter((i) => i.Active_Flag !== false && i.Categrory_Name?.trim()).map((i) => i.Categrory_Name.trim()),
+    items.filter((i) => i.categrory_Name?.trim()).map((i) => i.categrory_Name.trim()),
   )
   return Array.from(set).sort()
 }
 
 export function getBySlug(items: NewsItem[], slug: string) {
-  return items.find((i) => i.Slug === slug && i.Active_Flag !== false)
+  if (!Array.isArray(items)) {
+    return undefined
+  }
+  return items.find((i) => i.slug === slug)
 }
 
 export function filterByCategory(items: NewsItem[], categorySlug: string) {
-  return items.filter((i) => i.Active_Flag !== false && slugifyCategory(i.Categrory_Name) === categorySlug)
+  if (!Array.isArray(items)) {
+    return []
+  }
+  return items.filter((i) => slugifyCategory(i.categrory_Name) === categorySlug)
 }
 
 export function getCategoryFromSlug(items: NewsItem[], categorySlug: string) {
-  const found = items.find((i) => slugifyCategory(i.Categrory_Name) === categorySlug)
-  return found?.Categrory_Name || categorySlug
+  if (!Array.isArray(items)) {
+    return categorySlug
+  }
+  const found = items.find((i) => slugifyCategory(i.categrory_Name) === categorySlug)
+  return found?.categrory_Name || categorySlug
 }

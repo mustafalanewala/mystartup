@@ -9,6 +9,7 @@ import { formatDate, slugifyCategory } from "@/lib/news-utils";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import Ads from "@/components/Ads";
 
 export default function NewsDetailPage({
   params,
@@ -17,10 +18,7 @@ export default function NewsDetailPage({
 }) {
   const { slug } = use(params);
 
-  const { data, error, isLoading } = useSWR<NewsItem[]>(
-    "/data/data.json",
-    fetcher
-  );
+  const { data, error, isLoading } = useSWR<NewsItem[]>("/api/news", fetcher);
 
   if (isLoading) {
     return (
@@ -43,7 +41,7 @@ export default function NewsDetailPage({
     );
   }
 
-  const newsItem = data.find((item) => item.Slug === slug);
+  const newsItem = data.find((item) => item.slug === slug);
 
   if (!newsItem) {
     notFound();
@@ -52,8 +50,8 @@ export default function NewsDetailPage({
   const relatedNews = data
     .filter(
       (item) =>
-        item.Categrory_Name === newsItem.Categrory_Name &&
-        item.News_Id !== newsItem.News_Id
+        item.categrory_Name === newsItem.categrory_Name &&
+        item.news_Id !== newsItem.news_Id
     )
     .slice(0, 4);
 
@@ -71,14 +69,14 @@ export default function NewsDetailPage({
             </Link>
             <span className="text-gray-400">/</span>
             <Link
-              href={`/category/${slugifyCategory(newsItem.Categrory_Name)}`}
+              href={`/category/${slugifyCategory(newsItem.categrory_Name)}`}
               className="text-gray-500 hover:text-accent-blue transition-colors"
             >
-              {newsItem.Categrory_Name}
+              {newsItem.categrory_Name}
             </Link>
             <span className="text-gray-400">/</span>
             <span className="text-gray-900 font-medium truncate">
-              {newsItem.News_Title}
+              {newsItem.news_Title}
             </span>
           </nav>
         </div>
@@ -94,26 +92,26 @@ export default function NewsDetailPage({
                 <div className="flex flex-wrap items-center gap-3 mb-6">
                   <span
                     className={`px-4 py-2 rounded-full text-sm font-semibold text-white ${
-                      newsItem.Categrory_Name === "Business" ||
-                      newsItem.Categrory_Name === "Technology" ||
-                      newsItem.Categrory_Name === "Sports"
+                      newsItem.categrory_Name === "Business" ||
+                      newsItem.categrory_Name === "Technology" ||
+                      newsItem.categrory_Name === "Sports"
                         ? "bg-accent-blue"
                         : "bg-accent-purple"
                     }`}
                   >
-                    {newsItem.Categrory_Name}
+                    {newsItem.categrory_Name}
                   </span>
                   <span className="text-gray-500 text-sm font-medium">
-                    {formatDate(newsItem.Insert_Date)}
+                    {formatDate(newsItem.insert_Date)}
                   </span>
                   <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
                   <span className="text-gray-500 text-sm">
-                    By {newsItem.News_Source}
+                    By {newsItem.news_Source || "Unknown Source"}
                   </span>
                 </div>
 
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-                  {newsItem.News_Title}
+                  {newsItem.news_Title}
                 </h1>
 
                 {/* Social Share */}
@@ -123,7 +121,7 @@ export default function NewsDetailPage({
                     <button
                       onClick={() => {
                         const url = encodeURIComponent(window.location.href);
-                        const text = encodeURIComponent(newsItem.News_Title);
+                        const text = encodeURIComponent(newsItem.news_Title);
                         window.open(
                           `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
                           "_blank",
@@ -188,11 +186,14 @@ export default function NewsDetailPage({
               {/* Featured Image */}
               <div className="relative h-64 sm:h-80 lg:h-96">
                 <Image
-                  src={newsItem.Image}
-                  alt={newsItem.News_Title}
+                  src={newsItem.image}
+                  alt={newsItem.news_Title}
                   fill
                   className="object-cover"
                   priority
+                  onError={(e) => {
+                    e.currentTarget.src = "/placeholder.svg";
+                  }}
                 />
               </div>
 
@@ -200,7 +201,7 @@ export default function NewsDetailPage({
               <div className="p-6 sm:p-8">
                 <div className="prose prose-lg max-w-none">
                   <p className="text-gray-700 leading-relaxed text-lg">
-                    {newsItem.News_Content}
+                    {newsItem.news_Content}
                   </p>
 
                   {/* Additional content paragraphs for better reading experience */}
@@ -225,7 +226,7 @@ export default function NewsDetailPage({
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-gray-600 font-medium">Tags:</span>
                     <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
-                      {newsItem.Categrory_Name}
+                      {newsItem.categrory_Name}
                     </span>
                     <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
                       Breaking News
@@ -250,25 +251,28 @@ export default function NewsDetailPage({
                 <div className="space-y-4">
                   {relatedNews.map((item) => (
                     <Link
-                      key={item.News_Id}
-                      href={`/news/${item.Slug}`}
+                      key={item.news_Id}
+                      href={`/news/${item.slug}`}
                       className="block group"
                     >
                       <div className="flex space-x-3">
                         <div className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden">
                           <Image
-                            src={item.Image}
-                            alt={item.News_Title}
+                            src={item.image}
+                            alt={item.news_Title}
                             fill
                             className="object-cover group-hover:scale-105 transition-transform duration-200"
+                            onError={(e) => {
+                              e.currentTarget.src = "/placeholder.svg";
+                            }}
                           />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold text-gray-900 group-hover:text-accent-blue transition-colors duration-200 line-clamp-2">
-                            {item.News_Title}
+                            {item.news_Title}
                           </p>
                           <p className="text-xs text-gray-500 mt-1">
-                            {formatDate(item.Insert_Date)}
+                            {formatDate(item.insert_Date)}
                           </p>
                         </div>
                       </div>
@@ -278,6 +282,11 @@ export default function NewsDetailPage({
               </div>
             )}
 
+            {/* Advertisement */}
+            <div className="flex justify-center">
+              <Ads />
+            </div>
+
             {/* Popular Articles */}
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h3 className="text-xl font-bold text-gray-900 mb-4">
@@ -285,38 +294,41 @@ export default function NewsDetailPage({
               </h3>
               <div className="space-y-4">
                 {data
-                  .filter((item) => item.News_Id !== newsItem.News_Id)
+                  .filter((item) => item.news_Id !== newsItem.news_Id)
                   .sort(
                     (a, b) =>
-                      new Date(b.Insert_Date).getTime() -
-                      new Date(a.Insert_Date).getTime()
+                      new Date(b.insert_Date).getTime() -
+                      new Date(a.insert_Date).getTime()
                   )
                   .slice(0, 5)
                   .map((item) => (
                     <Link
-                      key={item.News_Id}
-                      href={`/news/${item.Slug}`}
+                      key={item.news_Id}
+                      href={`/news/${item.slug}`}
                       className="block group"
                     >
                       <div className="flex space-x-3">
                         <div className="relative w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden">
                           <Image
-                            src={item.Image}
-                            alt={item.News_Title}
+                            src={item.image}
+                            alt={item.news_Title}
                             fill
                             className="object-cover group-hover:scale-105 transition-transform duration-200"
+                            onError={(e) => {
+                              e.currentTarget.src = "/placeholder.svg";
+                            }}
                           />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold text-gray-900 group-hover:text-accent-blue transition-colors duration-200 line-clamp-2 leading-tight">
-                            {item.News_Title}
+                            {item.news_Title}
                           </p>
                           <div className="flex items-center space-x-2 mt-1">
                             <span className="text-xs text-gray-500">
-                              {formatDate(item.Insert_Date)}
+                              {formatDate(item.insert_Date)}
                             </span>
                             <span className="text-xs text-accent-blue font-medium">
-                              {item.Categrory_Name}
+                              {item.categrory_Name}
                             </span>
                           </div>
                         </div>

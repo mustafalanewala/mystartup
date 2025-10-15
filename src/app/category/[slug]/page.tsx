@@ -13,6 +13,7 @@ import {
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import Ads from "@/components/Ads";
 
 export default function CategoryPage({
   params,
@@ -21,10 +22,7 @@ export default function CategoryPage({
 }) {
   const { slug } = use(params);
 
-  const { data, error, isLoading } = useSWR<NewsItem[]>(
-    "/data/data.json",
-    fetcher
-  );
+  const { data, error, isLoading } = useSWR<NewsItem[]>("/api/news", fetcher);
 
   if (isLoading) {
     return (
@@ -95,47 +93,59 @@ export default function CategoryPage({
         </div>
       </div>
 
+      {/* Banner Ad */}
+      <div className="py-6 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-center">
+            <Ads className="w-full max-w-4xl" />
+          </div>
+        </div>
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Articles Grid */}
         {categoryNews.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {categoryNews.map((article) => (
               <div
-                key={article.News_Id}
+                key={article.news_Id}
                 className="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden hover:-translate-y-1"
               >
                 <div className="relative h-48 overflow-hidden">
                   <Image
-                    src={article.Image}
-                    alt={article.News_Title}
+                    src={article.image}
+                    alt={article.news_Title}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    onError={(e) => {
+                      e.currentTarget.src = "/placeholder.svg";
+                    }}
                   />
                 </div>
 
                 <div className="p-5">
                   <div className="mb-2">
                     <span className="text-gray-500 text-xs font-medium">
-                      {formatDate(article.Insert_Date)}
+                      {formatDate(article.insert_Date)}
                     </span>
                   </div>
 
-                  <Link href={`/news/${article.Slug}`}>
+                  <Link href={`/news/${article.slug}`}>
                     <h4 className="text-base font-bold text-gray-900 mb-2 hover:text-accent-blue transition-colors duration-200 line-clamp-2 group-hover:text-accent-blue leading-tight">
-                      {article.News_Title}
+                      {article.news_Title}
                     </h4>
                   </Link>
 
                   <p className="text-gray-600 text-sm mb-3 line-clamp-2 leading-relaxed">
-                    {article.News_Content}
+                    {article.news_Content}
                   </p>
 
                   <div className="flex items-center justify-between">
                     <span className="text-gray-500 text-xs font-medium">
-                      {article.News_Source}
+                      {article.news_Source}
                     </span>
                     <Link
-                      href={`/news/${article.Slug}`}
+                      href={`/news/${article.slug}`}
                       className="text-accent-blue hover:text-accent-purple text-xs font-semibold transition-colors duration-200 flex items-center"
                     >
                       Read

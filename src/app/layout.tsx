@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   keywords:
     "news, business, technology, sports, world, economy, politics, general",
   authors: [{ name: "MyStartup News Team" }],
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 export default function RootLayout({

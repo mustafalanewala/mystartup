@@ -14,15 +14,13 @@ export default function LatestNews() {
   useEffect(() => {
     const loadNews = async () => {
       try {
-        const data = await fetcher("/data/data.json");
-        const allNews = Array.isArray(data) ? data : data.news || [];
+        const allNews = await fetcher();
         // Get latest news excluding the ones in carousel (skip first 5)
         const latestNews = allNews
-          .filter((item: NewsItem) => item.Active_Flag)
           .sort(
             (a: NewsItem, b: NewsItem) =>
-              new Date(b.Insert_Date).getTime() -
-              new Date(a.Insert_Date).getTime()
+              new Date(b.insert_Date).getTime() -
+              new Date(a.insert_Date).getTime()
           )
           .slice(5, 17); // Get next 12 items for latest news section
         setNews(latestNews);
@@ -75,10 +73,13 @@ export default function LatestNews() {
         <div className="relative bg-gradient-to-br from-gray-600 to-gray-50/50 rounded-2xl overflow-hidden shadow-2xl">
           <div className="absolute inset-0">
             <Image
-              src={news[0].Image}
-              alt={news[0].News_Title}
+              src={news[0].image}
+              alt={news[0].news_Title}
               fill
               className="object-cover opacity-30"
+              onError={(e) => {
+                e.currentTarget.src = "/placeholder.svg";
+              }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent" />
           </div>
@@ -90,37 +91,37 @@ export default function LatestNews() {
                   BREAKING
                 </span>
                 <span className="bg-accent-blue px-4 py-2 rounded-full text-sm font-semibold text-white">
-                  {news[0].Categrory_Name}
+                  {news[0].categrory_Name}
                 </span>
                 <span className="text-gray-300 text-sm">
-                  {formatDate(news[0].Insert_Date)}
+                  {formatDate(news[0].insert_Date)}
                 </span>
               </div>
 
-              <Link href={`/news/${news[0].Slug}`}>
+              <Link href={`/news/${news[0].slug}`}>
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-white mb-4 hover:text-blue-300 transition-colors duration-300 leading-tight">
-                  {news[0].News_Title}
+                  {news[0].news_Title}
                 </h1>
               </Link>
 
               <p className="text-gray-200 text-base lg:text-lg leading-relaxed mb-6 max-w-3xl line-clamp-3">
-                {news[0].News_Content}
+                {news[0].news_Content}
               </p>
 
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-accent-blue rounded-full flex items-center justify-center">
                     <span className="text-white text-sm font-bold">
-                      {news[0].News_Source.charAt(0)}
+                      {news[0].news_Source?.charAt(0) || "N"}
                     </span>
                   </div>
                   <span className="text-gray-300 font-medium">
-                    By {news[0].News_Source}
+                    By {news[0].news_Source || "Unknown Source"}
                   </span>
                 </div>
 
                 <Link
-                  href={`/news/${news[0].Slug}`}
+                  href={`/news/${news[0].slug}`}
                   className="inline-flex items-center px-6 py-3 bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg"
                 >
                   Read Full Story
@@ -150,44 +151,47 @@ export default function LatestNews() {
         <div className="lg:col-span-2 space-y-6">
           {news.slice(1, 4).map((item, index) => (
             <article
-              key={item.News_Id}
+              key={item.news_Id}
               className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow duration-200"
             >
               <div className="md:flex">
                 <div className="md:w-2/5 relative h-48 md:h-auto">
                   <Image
-                    src={item.Image}
-                    alt={item.News_Title}
+                    src={item.image}
+                    alt={item.news_Title}
                     fill
                     className="object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = "/placeholder.svg";
+                    }}
                   />
                 </div>
                 <div className="md:w-3/5 p-6">
                   <div className="flex items-center space-x-2 mb-3">
                     <span className="bg-accent-blue px-2 py-1 rounded text-xs font-medium text-white">
-                      {item.Categrory_Name}
+                      {item.categrory_Name}
                     </span>
                     <span className="text-gray-500 text-xs">
-                      {formatDate(item.Insert_Date)}
+                      {formatDate(item.insert_Date)}
                     </span>
                   </div>
 
-                  <Link href={`/news/${item.Slug}`}>
+                  <Link href={`/news/${item.slug}`}>
                     <h4 className="font-bold text-xl text-gray-900 mb-3 hover:text-accent-blue transition-colors duration-200 line-clamp-2">
-                      {item.News_Title}
+                      {item.news_Title}
                     </h4>
                   </Link>
 
                   <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                    {item.News_Content}
+                    {item.news_Content}
                   </p>
 
                   <div className="flex items-center justify-between">
                     <span className="text-gray-500 text-sm">
-                      {item.News_Source}
+                      {item.news_Source}
                     </span>
                     <Link
-                      href={`/news/${item.Slug}`}
+                      href={`/news/${item.slug}`}
                       className="text-accent-blue hover:text-accent-purple font-medium text-sm transition-colors duration-200"
                     >
                       Read More →
@@ -206,33 +210,36 @@ export default function LatestNews() {
           </h4>
           {news.slice(4, 9).map((item) => (
             <article
-              key={item.News_Id}
+              key={item.news_Id}
               className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 hover:shadow-md transition-shadow duration-200"
             >
               <div className="flex">
                 <div className="w-24 h-24 relative flex-shrink-0">
                   <Image
-                    src={item.Image}
-                    alt={item.News_Title}
+                    src={item.image}
+                    alt={item.news_Title}
                     fill
                     className="object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = "/placeholder.svg";
+                    }}
                   />
                 </div>
                 <div className="p-4 flex-1">
                   <div className="flex items-center space-x-2 mb-2">
                     <span className="bg-accent-blue px-2 py-1 rounded text-xs font-medium text-white">
-                      {item.Categrory_Name}
+                      {item.categrory_Name}
                     </span>
                   </div>
 
-                  <Link href={`/news/${item.Slug}`}>
+                  <Link href={`/news/${item.slug}`}>
                     <h5 className="font-semibold text-sm text-gray-900 mb-1 hover:text-accent-blue transition-colors duration-200 line-clamp-2">
-                      {item.News_Title}
+                      {item.news_Title}
                     </h5>
                   </Link>
 
                   <p className="text-gray-600 text-xs line-clamp-1">
-                    {item.News_Content}
+                    {item.news_Content}
                   </p>
                 </div>
               </div>

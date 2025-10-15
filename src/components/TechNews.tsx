@@ -14,18 +14,14 @@ export default function TechNews() {
   useEffect(() => {
     const loadNews = async () => {
       try {
-        const data = await fetcher("/data/data.json");
-        const allNews = Array.isArray(data) ? data : data.news || [];
+        const allNews = await fetcher();
         // Get latest news from Technology category
         const techNews = allNews
-          .filter(
-            (item: NewsItem) =>
-              item.Active_Flag && item.Categrory_Name === "Technology"
-          )
+          .filter((item: NewsItem) => item.categrory_Name === "Technology")
           .sort(
             (a: NewsItem, b: NewsItem) =>
-              new Date(b.Insert_Date).getTime() -
-              new Date(a.Insert_Date).getTime()
+              new Date(b.insert_Date).getTime() -
+              new Date(a.insert_Date).getTime()
           )
           .slice(0, 6); // Get top 6 items
         setNews(techNews);
@@ -77,43 +73,46 @@ export default function TechNews() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {news.map((item) => (
           <article
-            key={item.News_Id}
+            key={item.news_Id}
             className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow duration-200"
           >
             <div className="relative h-48">
               <Image
-                src={item.Image}
-                alt={item.News_Title}
+                src={item.image}
+                alt={item.news_Title}
                 fill
                 className="object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = "/placeholder.svg";
+                }}
               />
             </div>
             <div className="p-6">
               <div className="flex items-center space-x-2 mb-3">
                 <span className="bg-accent-blue px-2 py-1 rounded text-xs font-medium text-white">
-                  {item.Categrory_Name}
+                  {item.categrory_Name}
                 </span>
                 <span className="text-gray-500 text-xs">
-                  {formatDate(item.Insert_Date)}
+                  {formatDate(item.insert_Date)}
                 </span>
               </div>
 
-              <Link href={`/news/${item.Slug}`}>
+              <Link href={`/news/${item.slug}`}>
                 <h3 className="font-bold text-xl text-gray-900 mb-3 hover:text-accent-blue transition-colors duration-200 line-clamp-2">
-                  {item.News_Title}
+                  {item.news_Title}
                 </h3>
               </Link>
 
               <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                {item.News_Content}
+                {item.news_Content}
               </p>
 
               <div className="flex items-center justify-between">
                 <span className="text-gray-500 text-sm">
-                  {item.News_Source}
+                  {item.news_Source || "Unknown Source"}
                 </span>
                 <Link
-                  href={`/news/${item.Slug}`}
+                  href={`/news/${item.slug}`}
                   className="text-accent-blue hover:text-accent-purple font-medium text-sm transition-colors duration-200"
                 >
                   Read More →
