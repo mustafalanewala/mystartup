@@ -49,3 +49,19 @@ export function getCategoryFromSlug(items: NewsItem[], categorySlug: string) {
   const found = items.find((i) => slugifyCategory(i.categrory_Name) === categorySlug)
   return found?.categrory_Name || categorySlug
 }
+
+export function paginateItems<T>(items: T[], page: number, itemsPerPage: number = 12) {
+  const startIndex = (page - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const paginatedItems = items.slice(startIndex, endIndex)
+  const totalPages = Math.ceil(items.length / itemsPerPage)
+
+  return {
+    items: paginatedItems,
+    totalPages,
+    currentPage: page,
+    totalItems: items.length,
+    hasNext: page < totalPages,
+    hasPrevious: page > 1
+  }
+}

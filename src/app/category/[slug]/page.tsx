@@ -1,14 +1,16 @@
 "use client";
 
-import { use } from "react";
+import { use, useState } from "react";
 import useSWR from "swr";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { Pagination } from "@/components/ui/pagination";
 import { fetcher } from "@/lib/fetcher";
 import type { NewsItem } from "@/lib/types";
 import {
   formatDate,
   getCategoryFromSlug,
   filterByCategory,
+  paginateItems,
 } from "@/lib/news-utils";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -21,6 +23,8 @@ export default function CategoryPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = use(params);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
 
   const { data, error, isLoading } = useSWR<NewsItem[]>("/api/news", fetcher);
 
@@ -47,9 +51,46 @@ export default function CategoryPage({
 
   const categoryName = getCategoryFromSlug(data, slug);
   const categoryNews = filterByCategory(data, slug);
+  const paginatedNews = paginateItems(categoryNews, currentPage, itemsPerPage);
 
   if (categoryNews.length === 0) {
-    notFound();
+    // Don't call notFound(), handle gracefully instead
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="bg-white border-b">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav className="flex items-center space-x-2 text-sm py-4">
+              <Link
+                href="/"
+                className="text-gray-500 hover:text-accent-blue transition-colors"
+              >
+                Home
+              </Link>
+              <span className="text-gray-400">/</span>
+              <span className="text-gray-900 font-medium">{categoryName}</span>
+            </nav>
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+              {categoryName}
+            </h1>
+            <div className="text-gray-500 text-lg">
+              No news available in this category at the moment.
+            </div>
+            <div className="mt-6">
+              <Link
+                href="/"
+                className="text-accent-blue hover:text-accent-purple font-medium"
+              >
+                ← Back to Home
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -85,7 +126,12 @@ export default function CategoryPage({
 
             {/* Stats */}
             <div className="flex items-center space-x-6 mt-6 text-sm text-gray-500">
-              <span>{categoryNews.length} articles</span>
+              <span>{categoryNews.length} articles total</span>
+              <span>•</span>
+              <span>
+                Showing {paginatedNews.items.length} articles on page{" "}
+                {currentPage}
+              </span>
               <span>•</span>
               <span>Updated regularly</span>
             </div>
@@ -104,9 +150,9 @@ export default function CategoryPage({
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Articles Grid */}
-        {categoryNews.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {categoryNews.map((article) => (
+        {paginatedNews.items.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {paginatedNews.items.map((article) => (
               <div
                 key={article.news_Id}
                 className="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden hover:-translate-y-1"
@@ -173,6 +219,22 @@ export default function CategoryPage({
             <div className="text-gray-500 text-lg">
               No articles found in this category.
             </div>
+          </div>
+        )}
+
+        {/* Pagination */}
+        {paginatedNews.totalPages > 1 && (
+          <div className="mt-12 mb-8">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={paginatedNews.totalPages}
+              onPageChange={(page) => {
+                setCurrentPage(page);
+                // Scroll to top of articles section
+                window.scrollTo({ top: 300, behavior: "smooth" });
+              }}
+              className="justify-center"
+            />
           </div>
         )}
       </div>

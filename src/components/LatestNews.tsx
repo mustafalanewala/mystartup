@@ -10,19 +10,20 @@ import { formatDate } from "@/lib/news-utils";
 export default function LatestNews() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const itemsToShow = 6; // Show only 6 items on homepage
 
   useEffect(() => {
     const loadNews = async () => {
       try {
-        const allNews = await fetcher();
+        const data = await fetcher();
         // Get latest news excluding the ones in carousel (skip first 5)
-        const latestNews = allNews
+        const latestNews = data
           .sort(
             (a: NewsItem, b: NewsItem) =>
               new Date(b.insert_Date).getTime() -
               new Date(a.insert_Date).getTime()
           )
-          .slice(5, 17); // Get next 12 items for latest news section
+          .slice(5, 5 + itemsToShow); // Get limited items for homepage
         setNews(latestNews);
       } catch (error) {
         console.error("Error loading latest news:", error);
@@ -55,6 +56,10 @@ export default function LatestNews() {
     );
   }
 
+  const featuredNews = news.slice(0, 1); // First item as featured
+  const sideNews = news.slice(1, 4); // Next 3 as side stories
+  const gridNews = news.slice(1); // Rest in grid
+
   if (news.length === 0) {
     return (
       <div className="text-center py-12">
@@ -69,12 +74,12 @@ export default function LatestNews() {
         <h2 className="text-4xl font-bold text-gray-900 mb-8">Latest News</h2>
       </div>
       {/* Hero Featured Article */}
-      {news.length > 0 && (
+      {featuredNews.length > 0 && (
         <div className="relative bg-gradient-to-br from-gray-600 to-gray-50/50 rounded-2xl overflow-hidden shadow-2xl">
           <div className="absolute inset-0">
             <Image
-              src={news[0].image}
-              alt={news[0].news_Title}
+              src={featuredNews[0].image}
+              alt={featuredNews[0].news_Title}
               fill
               className="object-cover opacity-30"
               onError={(e) => {
@@ -91,37 +96,37 @@ export default function LatestNews() {
                   BREAKING
                 </span>
                 <span className="bg-accent-blue px-4 py-2 rounded-full text-sm font-semibold text-white">
-                  {news[0].categrory_Name}
+                  {featuredNews[0].categrory_Name}
                 </span>
                 <span className="text-gray-300 text-sm">
-                  {formatDate(news[0].insert_Date)}
+                  {formatDate(featuredNews[0].insert_Date)}
                 </span>
               </div>
 
-              <Link href={`/news/${news[0].slug}`}>
+              <Link href={`/news/${featuredNews[0].slug}`}>
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-white mb-4 hover:text-blue-300 transition-colors duration-300 leading-tight">
-                  {news[0].news_Title}
+                  {featuredNews[0].news_Title}
                 </h1>
               </Link>
 
               <p className="text-gray-200 text-base lg:text-lg leading-relaxed mb-6 max-w-3xl line-clamp-3">
-                {news[0].news_Content}
+                {featuredNews[0].news_Content}
               </p>
 
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-accent-blue rounded-full flex items-center justify-center">
                     <span className="text-white text-sm font-bold">
-                      {news[0].news_Source?.charAt(0) || "N"}
+                      {featuredNews[0].news_Source?.charAt(0) || "N"}
                     </span>
                   </div>
                   <span className="text-gray-300 font-medium">
-                    By {news[0].news_Source || "Unknown Source"}
+                    By {featuredNews[0].news_Source || "Unknown Source"}
                   </span>
                 </div>
 
                 <Link
-                  href={`/news/${news[0].slug}`}
+                  href={`/news/${featuredNews[0].slug}`}
                   className="inline-flex items-center px-6 py-3 bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg"
                 >
                   Read Full Story
@@ -149,7 +154,7 @@ export default function LatestNews() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left column - Large cards */}
         <div className="lg:col-span-2 space-y-6">
-          {news.slice(1, 4).map((item, index) => (
+          {sideNews.map((item: NewsItem, index: number) => (
             <article
               key={item.news_Id}
               className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow duration-200"
@@ -208,7 +213,7 @@ export default function LatestNews() {
           <h4 className="text-2xl font-bold text-gray-900 mb-4">
             More Stories
           </h4>
-          {news.slice(4, 9).map((item) => (
+          {gridNews.map((item: NewsItem) => (
             <article
               key={item.news_Id}
               className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 hover:shadow-md transition-shadow duration-200"

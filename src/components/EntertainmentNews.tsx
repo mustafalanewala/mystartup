@@ -24,7 +24,7 @@ export default function EntertainmentNews() {
               new Date(b.insert_Date).getTime() -
               new Date(a.insert_Date).getTime()
           )
-          .slice(0, 8); // Get top 8 items
+          .slice(0, 4);
         setNews(entertainmentNews);
       } catch (error) {
         console.error("Error loading entertainment news:", error);
@@ -124,6 +124,29 @@ export default function EntertainmentNews() {
             </div>
           </article>
         ))}
+      </div>
+
+      {/* View All Link */}
+      <div className="text-center mt-8">
+        <Link
+          href="/category/entertainment"
+          className="inline-flex items-center px-6 py-3 bg-accent-purple text-white font-semibold rounded-lg hover:bg-accent-blue transition-colors duration-200"
+        >
+          View All Entertainment News
+          <svg
+            className="ml-2 w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </Link>
       </div>
     </div>
   );
