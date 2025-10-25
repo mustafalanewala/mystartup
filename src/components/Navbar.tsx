@@ -100,7 +100,7 @@ export default function Navbar() {
           <div className="justify-self-end">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-white hover:text-accent-purple"
+              className="text-white hover:text-accent-purple md:block"
             >
               {isMobileMenuOpen ? (
                 <X className="h-6 w-6" />
@@ -111,19 +111,32 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Mobile menu */}
+        {/* Hamburger menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden flex flex-col space-y-2 py-4 border-t border-gray-600">
-            {categories.map((category) => (
-              <Link
-                key={category}
-                href={`/category/${slugifyCategory(category)}`}
-                className="font-medium text-sm text-white hover:text-accent-purple transition-colors duration-200"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {category}
-              </Link>
-            ))}
+          <div className="flex flex-col space-y-2 py-4 border-t border-gray-600">
+            <Link
+              href="/gallery"
+              className="font-medium text-sm text-white hover:text-accent-purple transition-colors duration-200"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Gallery
+            </Link>
+
+            <Link
+              href="/videos"
+              className="font-medium text-sm text-white hover:text-accent-purple transition-colors duration-200"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Videos
+            </Link>
+
+            <Link
+              href="/blogs"
+              className="font-medium text-sm text-white hover:text-accent-purple transition-colors duration-200"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Blogs
+            </Link>
           </div>
         )}
       </div>
