@@ -97,9 +97,11 @@ export default async function BlogDetailPage({ params }: PageProps) {
                 <h2 className="text-2xl font-semibold text-gray-900 mb-4">
                   Summary
                 </h2>
-                <p className="text-gray-700 text-lg leading-relaxed">
-                  {blog.blog_Summary}
-                </p>
+                <div className="text-gray-700 text-lg leading-relaxed">
+                  <div
+                    dangerouslySetInnerHTML={{ __html: blog.blog_Summary }}
+                  />
+                </div>
               </div>
             )}
 

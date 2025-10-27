@@ -16,11 +16,6 @@ function safeKey(value?: string | number) {
   return String(value ?? Math.random().toString(36).slice(2, 9));
 }
 
-function stripHtml(html?: string) {
-  if (!html) return "";
-  return html.replace(/<[^>]*>/g, "").trim();
-}
-
 export default async function BlogsPage() {
   try {
     const res = await fetch(API_URL, { cache: "no-store" });
@@ -65,9 +60,9 @@ export default async function BlogsPage() {
                       {b.blog_Title}
                     </h2>
 
-                    <p className="text-gray-700 text-sm mb-4 line-clamp-3">
-                      {stripHtml(b.blog_Summary ?? b.blog_Content)}
-                    </p>
+                    <div className="text-gray-700 text-sm mb-4 line-clamp-3">
+                      <div dangerouslySetInnerHTML={{ __html: b.blog_Summary ?? b.blog_Content ?? '' }} />
+                    </div>
 
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-gray-500">Read more</span>
